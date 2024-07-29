@@ -76,11 +76,14 @@
             display: flex;
             align-items: center;
             font-size: 0.9em;
+            flex-grow: 1;
         }
-        .subscription-details img {
-            margin-left: 10px;
-            width: 20px;
-            height: 20px;
+        .subscription-actions {
+            display: flex;
+            align-items: center;
+        }
+        .subscription-actions button {
+            margin-left: 5px;
         }
         .bank-verified {
             display: flex;
@@ -129,66 +132,66 @@
         <div class="subscription-list">
             <h2>Active Subscriptions</h2>
             <div class="subscription-item" id="sub1">
-                <p class="subscription-details">
+                <div class="subscription-details">
                     Name: John Doe | Amount: $100 | Interval: Monthly | Starts: 2024-08-01
                     <span class="bank-verified">
                         <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
                         Bank Verified
                     </span>
-                </p>
-                <div>
+                </div>
+                <div class="subscription-actions">
                     <button onclick="editSubscription('sub1')">Edit</button>
                     <button onclick="deleteSubscription('sub1')">Delete</button>
                 </div>
             </div>
             <div class="subscription-item" id="sub2">
-                <p class="subscription-details">
+                <div class="subscription-details">
                     Name: Alice Cooper | Amount: $150 | Interval: Weekly | Starts: 2024-08-07
                     <span class="bank-verified">
                         <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
                         Bank Verified
                     </span>
-                </p>
-                <div>
+                </div>
+                <div class="subscription-actions">
                     <button onclick="editSubscription('sub2')">Edit</button>
                     <button onclick="deleteSubscription('sub2')">Delete</button>
                 </div>
             </div>
             <div class="subscription-item" id="sub3">
-                <p class="subscription-details">
+                <div class="subscription-details">
                     Name: Bob Smith | Amount: $250 | Interval: Every 2 weeks | Starts: 2024-08-15
                     <span class="bank-verified">
                         <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
                         Bank Verified
                     </span>
-                </p>
-                <div>
+                </div>
+                <div class="subscription-actions">
                     <button onclick="editSubscription('sub3')">Edit</button>
                     <button onclick="deleteSubscription('sub3')">Delete</button>
                 </div>
             </div>
             <div class="subscription-item" id="sub4">
-                <p class="subscription-details">
+                <div class="subscription-details">
                     Name: Carol Jones | Amount: $200 | Interval: Every 4 weeks | Starts: 2024-08-03
                     <span class="bank-verified">
                         <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
                         Bank Verified
                     </span>
-                </p>
-                <div>
+                </div>
+                <div class="subscription-actions">
                     <button onclick="editSubscription('sub4')">Edit</button>
                     <button onclick="deleteSubscription('sub4')">Delete</button>
                 </div>
             </div>
             <div class="subscription-item" id="sub5">
-                <p class="subscription-details">
+                <div class="subscription-details">
                     Name: David Lee | Amount: $180 | Interval: Monthly | Starts: 2024-08-25
                     <span class="bank-verified">
                         <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
                         Bank Verified
                     </span>
-                </p>
-                <div>
+                </div>
+                <div class="subscription-actions">
                     <button onclick="editSubscription('sub5')">Edit</button>
                     <button onclick="deleteSubscription('sub5')">Delete</button>
                 </div>
@@ -215,7 +218,7 @@
                 subscriptionItem.className = 'subscription-item';
                 subscriptionItem.id = newSubscriptionId;
 
-                const subscriptionDetails = document.createElement('p');
+                const subscriptionDetails = document.createElement('div');
                 subscriptionDetails.className = 'subscription-details';
                 subscriptionDetails.innerHTML = `Name: ${customerName} | Amount: $${subscriptionAmount} | Interval: ${subscriptionInterval.charAt(0).toUpperCase() + subscriptionInterval.slice(1)} | Starts: ${startSubscription}
                     <span class="bank-verified">
@@ -224,6 +227,7 @@
                     </span>`;
 
                 const buttonsDiv = document.createElement('div');
+                buttonsDiv.className = 'subscription-actions';
 
                 const editButton = document.createElement('button');
                 editButton.innerText = 'Edit';
