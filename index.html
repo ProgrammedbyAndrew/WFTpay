@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WFTPay v1 - ACH Subscription Management</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .header {
+            background-color: #d10000;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .container {
+            width: 60%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin: 15px 0 5px;
+        }
+        input[type="text"], input[type="number"], input[type="tel"], input[type="email"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #d10000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 6px;
+            margin: 5px;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        .subscription-list {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+        }
+        .subscription-item {
+            background: #eee;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .subscription-details {
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+        }
+        .subscription-details img {
+            margin-left: 10px;
+            width: 20px;
+            height: 20px;
+        }
+        .bank-verified {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+        .bank-verified img {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>WFTPay v1</h1>
+        <p>Manage Your ACH Subscriptions</p>
+    </div>
+
+    <div class="container">
+        <form id="subscriptionForm">
+            <label for="customerName">Customer Name:</label>
+            <input type="text" id="customerName" placeholder="Enter customer's name">
+
+            <label for="phoneNumber">Phone Number:</label>
+            <div style="display: flex; justify-content: center;">
+                <input type="tel" id="phoneNumber" placeholder="Enter phone number to send Plaid link">
+                <button type="button" onclick="verifyPhoneNumber()">Verify</button>
+            </div>
+
+            <label for="subscriptionAmount">Subscription Amount:</label>
+            <input type="number" id="subscriptionAmount" placeholder="Enter amount">
+
+            <label for="subscriptionInterval">Subscription Interval:</label>
+            <select id="subscriptionInterval">
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Every 2 weeks</option>
+                <option value="monthly">Monthly</option>
+                <option value="every4weeks">Every 4 weeks</option>
+            </select>
+
+            <label for="startSubscription">Subscription Start Date:</label>
+            <input type="date" id="startSubscription">
+
+            <button type="button" onclick="addSubscription()">Add Subscription</button>
+        </form>
+
+        <div class="subscription-list">
+            <h2>Active Subscriptions</h2>
+            <div class="subscription-item" id="sub1">
+                <p class="subscription-details">
+                    Name: John Doe | Amount: $100 | Interval: Monthly | Starts: 2024-08-01
+                    <span class="bank-verified">
+                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
+                        Bank Verified
+                    </span>
+                </p>
+                <div>
+                    <button onclick="editSubscription('sub1')">Edit</button>
+                    <button onclick="deleteSubscription('sub1')">Delete</button>
+                </div>
+            </div>
+            <div class="subscription-item" id="sub2">
+                <p class="subscription-details">
+                    Name: Alice Cooper | Amount: $150 | Interval: Weekly | Starts: 2024-08-07
+                    <span class="bank-verified">
+                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
+                        Bank Verified
+                    </span>
+                </p>
+                <div>
+                    <button onclick="editSubscription('sub2')">Edit</button>
+                    <button onclick="deleteSubscription('sub2')">Delete</button>
+                </div>
+            </div>
+            <div class="subscription-item" id="sub3">
+                <p class="subscription-details">
+                    Name: Bob Smith | Amount: $250 | Interval: Every 2 weeks | Starts: 2024-08-15
+                    <span class="bank-verified">
+                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
+                        Bank Verified
+                    </span>
+                </p>
+                <div>
+                    <button onclick="editSubscription('sub3')">Edit</button>
+                    <button onclick="deleteSubscription('sub3')">Delete</button>
+                </div>
+            </div>
+            <div class="subscription-item" id="sub4">
+                <p class="subscription-details">
+                    Name: Carol Jones | Amount: $200 | Interval: Every 4 weeks | Starts: 2024-08-03
+                    <span class="bank-verified">
+                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
+                        Bank Verified
+                    </span>
+                </p>
+                <div>
+                    <button onclick="editSubscription('sub4')">Edit</button>
+                    <button onclick="deleteSubscription('sub4')">Delete</button>
+                </div>
+            </div>
+            <div class="subscription-item" id="sub5">
+                <p class="subscription-details">
+                    Name: David Lee | Amount: $180 | Interval: Monthly | Starts: 2024-08-25
+                    <span class="bank-verified">
+                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
+                        Bank Verified
+                    </span>
+                </p>
+                <div>
+                    <button onclick="editSubscription('sub5')">Edit</button>
+                    <button onclick="deleteSubscription('sub5')">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function verifyPhoneNumber() {
+            console.log('Phone number verification is not implemented in this demo.');
+        }
+
+        function addSubscription() {
+            const customerName = document.getElementById('customerName').value;
+            const subscriptionAmount = document.getElementById('subscriptionAmount').value;
+            const subscriptionInterval = document.getElementById('subscriptionInterval').value;
+            const startSubscription = document.getElementById('startSubscription').value;
+
+            if (customerName && subscriptionAmount && subscriptionInterval && startSubscription) {
+                const newSubscriptionId = 'sub' + (document.getElementsByClassName('subscription-item').length + 1);
+                const subscriptionList = document.querySelector('.subscription-list');
+
+                const subscriptionItem = document.createElement('div');
+                subscriptionItem.className = 'subscription-item';
+                subscriptionItem.id = newSubscriptionId;
+
+                const subscriptionDetails = document.createElement('p');
+                subscriptionDetails.className = 'subscription-details';
+                subscriptionDetails.innerHTML = `Name: ${customerName} | Amount: $${subscriptionAmount} | Interval: ${subscriptionInterval.charAt(0).toUpperCase() + subscriptionInterval.slice(1)} | Starts: ${startSubscription}
+                    <span class="bank-verified">
+                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
+                        Bank Verified
+                    </span>`;
+
+                const buttonsDiv = document.createElement('div');
+
+                const editButton = document.createElement('button');
+                editButton.innerText = 'Edit';
+                editButton.onclick = () => editSubscription(newSubscriptionId);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.innerText = 'Delete';
+                deleteButton.onclick = () => deleteSubscription(newSubscriptionId);
+
+                buttonsDiv.appendChild(editButton);
+                buttonsDiv.appendChild(deleteButton);
+
+                subscriptionItem.appendChild(subscriptionDetails);
+                subscriptionItem.appendChild(buttonsDiv);
+
+                subscriptionList.appendChild(subscriptionItem);
+
+                // Clear form fields
+                document.getElementById('subscriptionForm').reset();
+            } else {
+                console.log('Please fill out all fields.');
+            }
+        }
+
+        function editSubscription(subscriptionId) {
+            console.log('Editing subscription:', subscriptionId, 'is not implemented in this demo.');
+        }
+
+        function deleteSubscription(subscriptionId) {
+            const subscriptionElement = document.getElementById(subscriptionId);
+            subscriptionElement.remove();
+            console.log('Subscription deleted:', subscriptionId);
+        }
+    </script>
+</body>
+</html>
