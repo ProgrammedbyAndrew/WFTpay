@@ -19,12 +19,21 @@
             text-align: center;
         }
         .container {
-            width: 60%;
+            display: flex;
+            justify-content: center;
             margin: 20px auto;
             background: white;
             padding: 20px;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
             border-radius: 8px;
+            width: 90%;
+        }
+        .form-container, .verified-container {
+            flex: 1;
+            margin: 0 10px;
+        }
+        .form-container {
+            width: 60%;
         }
         form {
             display: flex;
@@ -85,10 +94,29 @@
         .subscription-actions button {
             margin-left: 5px;
         }
-        .bank-verified {
+        .verified-container {
+            width: 40%;
+        }
+        .verified-list {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+        }
+        .verified-item {
+            background: #eee;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .verified-details {
             display: flex;
             align-items: center;
-            margin-left: 10px;
+            font-size: 0.9em;
+            flex-grow: 1;
         }
         .bank-verified img {
             width: 20px;
@@ -104,98 +132,116 @@
     </div>
 
     <div class="container">
-        <form id="subscriptionForm">
-            <label for="customerName">Customer Name:</label>
-            <input type="text" id="customerName" placeholder="Enter customer's name">
+        <div class="form-container">
+            <form id="subscriptionForm">
+                <label for="customerName">Customer Name:</label>
+                <input type="text" id="customerName" placeholder="Enter customer's name">
 
-            <label for="phoneNumber">Phone Number:</label>
-            <div style="display: flex; justify-content: center;">
-                <input type="tel" id="phoneNumber" placeholder="Enter phone number to send Plaid link">
-                <button type="button" onclick="verifyPhoneNumber()">Verify</button>
-            </div>
+                <label for="phoneNumber">Phone Number:</label>
+                <div style="display: flex; justify-content: center;">
+                    <input type="tel" id="phoneNumber" placeholder="Enter phone number to send Plaid link">
+                    <button type="button" onclick="verifyPhoneNumber()">Verify</button>
+                </div>
 
-            <label for="subscriptionAmount">Subscription Amount:</label>
-            <input type="number" id="subscriptionAmount" placeholder="Enter amount">
+                <label for="subscriptionAmount">Subscription Amount:</label>
+                <input type="number" id="subscriptionAmount" placeholder="Enter amount">
 
-            <label for="subscriptionInterval">Subscription Interval:</label>
-            <select id="subscriptionInterval">
-                <option value="weekly">Weekly</option>
-                <option value="biweekly">Every 2 weeks</option>
-                <option value="monthly">Monthly</option>
-                <option value="every4weeks">Every 4 weeks</option>
-            </select>
+                <label for="subscriptionInterval">Subscription Interval:</label>
+                <select id="subscriptionInterval">
+                    <option value="weekly">Weekly</option>
+                    <option value="biweekly">Every 2 weeks</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="every4weeks">Every 4 weeks</option>
+                </select>
 
-            <label for="startSubscription">Subscription Start Date:</label>
-            <input type="date" id="startSubscription">
+                <label for="startSubscription">Subscription Start Date:</label>
+                <input type="date" id="startSubscription">
 
-            <button type="button" onclick="addSubscription()">Add Subscription</button>
-        </form>
+                <button type="button" onclick="addSubscription()">Add Subscription</button>
+            </form>
 
-        <div class="subscription-list">
-            <h2>Active Subscriptions</h2>
-            <div class="subscription-item" id="sub1">
-                <div class="subscription-details">
-                    Name: John Doe | Amount: $100 | Interval: Monthly | Starts: 2024-08-01
-                    <span class="bank-verified">
-                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
-                        Bank Verified
-                    </span>
+            <div class="subscription-list">
+                <h2>Active Subscriptions</h2>
+                <div class="subscription-item" id="sub1">
+                    <div class="subscription-details">
+                        Name: John Doe | Amount: $100 | Interval: Monthly | Starts: 2024-08-01
+                    </div>
+                    <div class="subscription-actions">
+                        <button onclick="editSubscription('sub1')">Edit</button>
+                        <button onclick="deleteSubscription('sub1')">Delete</button>
+                    </div>
                 </div>
-                <div class="subscription-actions">
-                    <button onclick="editSubscription('sub1')">Edit</button>
-                    <button onclick="deleteSubscription('sub1')">Delete</button>
+                <div class="subscription-item" id="sub2">
+                    <div class="subscription-details">
+                        Name: Alice Cooper | Amount: $150 | Interval: Weekly | Starts: 2024-08-07
+                    </div>
+                    <div class="subscription-actions">
+                        <button onclick="editSubscription('sub2')">Edit</button>
+                        <button onclick="deleteSubscription('sub2')">Delete</button>
+                    </div>
                 </div>
-            </div>
-            <div class="subscription-item" id="sub2">
-                <div class="subscription-details">
-                    Name: Alice Cooper | Amount: $150 | Interval: Weekly | Starts: 2024-08-07
-                    <span class="bank-verified">
-                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
-                        Bank Verified
-                    </span>
+                <div class="subscription-item" id="sub3">
+                    <div class="subscription-details">
+                        Name: Bob Smith | Amount: $250 | Interval: Every 2 weeks | Starts: 2024-08-15
+                    </div>
+                    <div class="subscription-actions">
+                        <button onclick="editSubscription('sub3')">Edit</button>
+                        <button onclick="deleteSubscription('sub3')">Delete</button>
+                    </div>
                 </div>
-                <div class="subscription-actions">
-                    <button onclick="editSubscription('sub2')">Edit</button>
-                    <button onclick="deleteSubscription('sub2')">Delete</button>
+                <div class="subscription-item" id="sub4">
+                    <div class="subscription-details">
+                        Name: Carol Jones | Amount: $200 | Interval: Every 4 weeks | Starts: 2024-08-03
+                    </div>
+                    <div class="subscription-actions">
+                        <button onclick="editSubscription('sub4')">Edit</button>
+                        <button onclick="deleteSubscription('sub4')">Delete</button>
+                    </div>
                 </div>
-            </div>
-            <div class="subscription-item" id="sub3">
-                <div class="subscription-details">
-                    Name: Bob Smith | Amount: $250 | Interval: Every 2 weeks | Starts: 2024-08-15
-                    <span class="bank-verified">
-                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
-                        Bank Verified
-                    </span>
-                </div>
-                <div class="subscription-actions">
-                    <button onclick="editSubscription('sub3')">Edit</button>
-                    <button onclick="deleteSubscription('sub3')">Delete</button>
-                </div>
-            </div>
-            <div class="subscription-item" id="sub4">
-                <div class="subscription-details">
-                    Name: Carol Jones | Amount: $200 | Interval: Every 4 weeks | Starts: 2024-08-03
-                    <span class="bank-verified">
-                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
-                        Bank Verified
-                    </span>
-                </div>
-                <div class="subscription-actions">
-                    <button onclick="editSubscription('sub4')">Edit</button>
-                    <button onclick="deleteSubscription('sub4')">Delete</button>
+                <div class="subscription-item" id="sub5">
+                    <div class="subscription-details">
+                        Name: David Lee | Amount: $180 | Interval: Monthly | Starts: 2024-08-25
+                    </div>
+                    <div class="subscription-actions">
+                        <button onclick="editSubscription('sub5')">Edit</button>
+                        <button onclick="deleteSubscription('sub5')">Delete</button>
+                    </div>
                 </div>
             </div>
-            <div class="subscription-item" id="sub5">
-                <div class="subscription-details">
-                    Name: David Lee | Amount: $180 | Interval: Monthly | Starts: 2024-08-25
-                    <span class="bank-verified">
+        </div>
+
+        <div class="verified-container">
+            <h2>Verified Bank Accounts</h2>
+            <div class="verified-list">
+                <div class="verified-item" onclick="selectVerifiedCustomer('John Doe')">
+                    <div class="verified-details">
                         <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
-                        Bank Verified
-                    </span>
+                        John Doe
+                    </div>
                 </div>
-                <div class="subscription-actions">
-                    <button onclick="editSubscription('sub5')">Edit</button>
-                    <button onclick="deleteSubscription('sub5')">Delete</button>
+                <div class="verified-item" onclick="selectVerifiedCustomer('Alice Cooper')">
+                    <div class="verified-details">
+                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
+                        Alice Cooper
+                    </div>
+                </div>
+                <div class="verified-item" onclick="selectVerifiedCustomer('Bob Smith')">
+                    <div class="verified-details">
+                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
+                        Bob Smith
+                    </div>
+                </div>
+                <div class="verified-item" onclick="selectVerifiedCustomer('Carol Jones')">
+                    <div class="verified-details">
+                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
+                        Carol Jones
+                    </div>
+                </div>
+                <div class="verified-item" onclick="selectVerifiedCustomer('David Lee')">
+                    <div class="verified-details">
+                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
+                        David Lee
+                    </div>
                 </div>
             </div>
         </div>
@@ -222,11 +268,7 @@
 
                 const subscriptionDetails = document.createElement('div');
                 subscriptionDetails.className = 'subscription-details';
-                subscriptionDetails.innerHTML = `Name: ${customerName} | Amount: $${subscriptionAmount} | Interval: ${subscriptionInterval.charAt(0).toUpperCase() + subscriptionInterval.slice(1)} | Starts: ${startSubscription}
-                    <span class="bank-verified">
-                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
-                        Bank Verified
-                    </span>`;
+                subscriptionDetails.innerHTML = `Name: ${customerName} | Amount: $${subscriptionAmount} | Interval: ${subscriptionInterval.charAt(0).toUpperCase() + subscriptionInterval.slice(1)} | Starts: ${startSubscription}`;
 
                 const buttonsDiv = document.createElement('div');
                 buttonsDiv.className = 'subscription-actions';
@@ -262,6 +304,10 @@
             const subscriptionElement = document.getElementById(subscriptionId);
             subscriptionElement.remove();
             console.log('Subscription deleted:', subscriptionId);
+        }
+
+        function selectVerifiedCustomer(customerName) {
+            document.getElementById('customerName').value = customerName;
         }
     </script>
 </body>
