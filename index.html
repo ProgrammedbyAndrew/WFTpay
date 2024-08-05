@@ -20,110 +20,126 @@
         }
         .container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             margin: 20px auto;
-            background: white;
             padding: 20px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            border-radius: 8px;
             width: 90%;
         }
-        .form-container, .verified-container {
-            flex: 1;
+        .section {
             margin: 0 10px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .form-container {
-            width: 70%;
+        .section h2 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.2em;
         }
         form {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
+            width: 100%;
         }
         label {
-            display: block;
-            margin: 15px 0 5px;
+            margin: 10px 0 5px;
+            font-size: 0.9em;
         }
-        input[type="text"], input[type="number"], input[type="tel"], input[type="email"], input[type="date"], select {
+        input[type="text"], input[type="tel"], input[type="number"], input[type="date"], select {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             margin-bottom: 10px;
             border: 1px solid #ddd;
             border-radius: 6px;
             box-sizing: border-box;
+            font-size: 0.9em;
         }
         button {
             background-color: #d10000;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 0.9em;
             border-radius: 6px;
-            margin: 5px;
+            margin: 5px 0;
         }
         button:hover {
             opacity: 0.8;
         }
-        .subscription-list {
-            margin-top: 20px;
+        .list {
             width: 100%;
             padding: 10px;
         }
-        .subscription-item {
+        .item {
             background: #eee;
             border: 1px solid #ccc;
-            padding: 10px;
-            margin-top: 10px;
+            padding: 8px;
+            margin-top: 8px;
             border-radius: 6px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-        }
-        .subscription-details {
-            display: flex;
-            align-items: center;
-            font-size: 0.9em;
-            flex-grow: 1;
-        }
-        .subscription-actions {
-            display: flex;
-            align-items: center;
-        }
-        .subscription-actions button {
-            margin-left: 5px;
-        }
-        .verified-container {
-            width: 30%;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .verified-list {
-            margin-top: 20px;
-            width: 100%;
-            padding: 10px;
-        }
-        .verified-item {
-            background: #eee;
-            border: 1px solid #ccc;
-            padding: 5px;
-            margin-top: 5px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-        .verified-details {
-            display: flex;
             align-items: center;
             font-size: 0.8em;
+        }
+        .details {
+            display: flex;
+            align-items: center;
             flex-grow: 1;
         }
-        .bank-verified img {
-            width: 15px;
-            height: 15px;
+        .actions button {
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .verify-bubble {
+            width: 20px;
+            height: 20px;
             margin-right: 5px;
         }
     </style>
@@ -135,8 +151,10 @@
     </div>
 
     <div class="container">
-        <div class="form-container">
-            <form id="subscriptionForm">
+        <!-- Add New Customer Section -->
+        <div class="section" id="addCustomerSection">
+            <h2>Add New Customer</h2>
+            <form id="customerForm">
                 <label for="customerName">Customer Name:</label>
                 <input type="text" id="customerName" placeholder="Enter customer's name">
 
@@ -145,6 +163,26 @@
                     <input type="tel" id="phoneNumber" placeholder="Enter phone number to send Plaid link">
                     <button type="button" onclick="verifyPhoneNumber()">Verify</button>
                 </div>
+            </form>
+        </div>
+
+        <!-- Verified Accounts Section -->
+        <div class="section" id="verifiedAccountsSection">
+            <h2>Verified Bank Accounts</h2>
+            <div class="list" id="verifiedList">
+                <!-- Verified customers will be populated here -->
+            </div>
+        </div>
+
+        <!-- Create and Manage Subscriptions Section -->
+        <div class="section" id="subscriptionSection">
+            <h2>Create Subscription</h2>
+            <form id="subscriptionForm">
+                <label for="verifiedCustomer">Select Verified Customer:</label>
+                <select id="verifiedCustomer">
+                    <option value="">Select a customer</option>
+                    <!-- Verified customers will be populated here -->
+                </select>
 
                 <label for="subscriptionAmount">Subscription Amount:</label>
                 <input type="number" id="subscriptionAmount" placeholder="Enter amount">
@@ -162,124 +200,113 @@
 
                 <button type="button" onclick="addSubscription()">Add Subscription</button>
             </form>
+        </div>
+    </div>
 
-            <div class="subscription-list">
-                <h2>Active Subscriptions</h2>
-                <div class="subscription-item" id="sub1">
-                    <div class="subscription-details">
-                        Name: John Doe | Amount: $100 | Interval: Monthly | Starts: 2024-08-01
-                    </div>
-                    <div class="subscription-actions">
-                        <button onclick="editSubscription('sub1')">Edit</button>
-                        <button onclick="deleteSubscription('sub1')">Delete</button>
-                    </div>
-                </div>
-                <div class="subscription-item" id="sub2">
-                    <div class="subscription-details">
-                        Name: Alice Cooper | Amount: $150 | Interval: Weekly | Starts: 2024-08-07
-                    </div>
-                    <div class="subscription-actions">
-                        <button onclick="editSubscription('sub2')">Edit</button>
-                        <button onclick="deleteSubscription('sub2')">Delete</button>
-                    </div>
-                </div>
-                <div class="subscription-item" id="sub3">
-                    <div class="subscription-details">
-                        Name: Bob Smith | Amount: $250 | Interval: Every 2 weeks | Starts: 2024-08-15
-                    </div>
-                    <div class="subscription-actions">
-                        <button onclick="editSubscription('sub3')">Edit</button>
-                        <button onclick="deleteSubscription('sub3')">Delete</button>
-                    </div>
-                </div>
-                <div class="subscription-item" id="sub4">
-                    <div class="subscription-details">
-                        Name: Carol Jones | Amount: $200 | Interval: Every 4 weeks | Starts: 2024-08-03
-                    </div>
-                    <div class="subscription-actions">
-                        <button onclick="editSubscription('sub4')">Edit</button>
-                        <button onclick="deleteSubscription('sub4')">Delete</button>
-                    </div>
-                </div>
-                <div class="subscription-item" id="sub5">
-                    <div class="subscription-details">
-                        Name: David Lee | Amount: $180 | Interval: Monthly | Starts: 2024-08-25
-                    </div>
-                    <div class="subscription-actions">
-                        <button onclick="editSubscription('sub5')">Edit</button>
-                        <button onclick="deleteSubscription('sub5')">Delete</button>
-                    </div>
-                </div>
+    <div class="container">
+        <!-- Active Subscriptions Section -->
+        <div class="section" id="activeSubscriptionsSection">
+            <h2>Active Subscriptions</h2>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search subscriptions..." onkeyup="filterSubscriptions()">
+            <div class="list" id="subscriptionList">
+                <!-- Subscriptions will be populated here -->
             </div>
         </div>
+    </div>
 
-        <div class="verified-container">
-            <h2>Verified Bank Accounts</h2>
-            <div class="verified-list">
-                <div class="verified-item" onclick="selectVerifiedCustomer('John Doe')">
-                    <div class="verified-details">
-                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
-                        John Doe
-                    </div>
-                </div>
-                <div class="verified-item" onclick="selectVerifiedCustomer('Alice Cooper')">
-                    <div class="verified-details">
-                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
-                        Alice Cooper
-                    </div>
-                </div>
-                <div class="verified-item" onclick="selectVerifiedCustomer('Bob Smith')">
-                    <div class="verified-details">
-                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
-                        Bob Smith
-                    </div>
-                </div>
-                <div class="verified-item" onclick="selectVerifiedCustomer('Carol Jones')">
-                    <div class="verified-details">
-                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
-                        Carol Jones
-                    </div>
-                </div>
-                <div class="verified-item" onclick="selectVerifiedCustomer('David Lee')">
-                    <div class="verified-details">
-                        <img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified">
-                        David Lee
-                    </div>
-                </div>
-                <!-- Additional verified customers can be added here -->
-            </div>
+    <!-- Modal for Editing Subscription -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Edit Subscription</h2>
+            <form id="editSubscriptionForm">
+                <label for="editCustomerName">Customer Name:</label>
+                <input type="text" id="editCustomerName" disabled>
+
+                <label for="editSubscriptionAmount">Subscription Amount:</label>
+                <input type="number" id="editSubscriptionAmount">
+
+                <label for="editSubscriptionInterval">Subscription Interval:</label>
+                <select id="editSubscriptionInterval">
+                    <option value="weekly">Weekly</option>
+                    <option value="biweekly">Every 2 weeks</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="every4weeks">Every 4 weeks</option>
+                </select>
+
+                <label for="editStartSubscription">Subscription Start Date:</label>
+                <input type="date" id="editStartSubscription">
+
+                <label for="editNextDraftDate">Next Draft Date:</label>
+                <input type="date" id="editNextDraftDate" disabled>
+
+                <button type="button" onclick="saveSubscription()">Save Changes</button>
+            </form>
         </div>
     </div>
 
     <script>
         function verifyPhoneNumber() {
-            console.log('Phone number verification is not implemented in this demo.');
+            const customerName = document.getElementById('customerName').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+
+            if (customerName && phoneNumber) {
+                const verifiedList = document.getElementById('verifiedList');
+                const verifiedItem = document.createElement('div');
+                verifiedItem.className = 'item';
+                verifiedItem.onclick = () => selectVerifiedCustomer(customerName);
+
+                const verifiedDetails = document.createElement('div');
+                verifiedDetails.className = 'details';
+                verifiedDetails.innerHTML = `<img src="https://img.icons8.com/ios-filled/50/00ff00/ok.png" alt="Bank Verified" class="verify-bubble"> ${customerName}`;
+
+                verifiedItem.appendChild(verifiedDetails);
+                verifiedList.appendChild(verifiedItem);
+
+                const verifiedCustomerSelect = document.getElementById('verifiedCustomer');
+                const option = document.createElement('option');
+                option.value = customerName;
+                option.text = customerName;
+                verifiedCustomerSelect.appendChild(option);
+
+                document.getElementById('customerForm').reset();
+                console.log('Customer verified:', customerName);
+            } else {
+                console.log('Please fill out all fields.');
+            }
+        }
+
+        function selectVerifiedCustomer(customerName) {
+            const verifiedCustomerSelect = document.getElementById('verifiedCustomer');
+            verifiedCustomerSelect.value = customerName;
         }
 
         function addSubscription() {
-            const customerName = document.getElementById('customerName').value;
+            const verifiedCustomer = document.getElementById('verifiedCustomer').value;
             const subscriptionAmount = document.getElementById('subscriptionAmount').value;
             const subscriptionInterval = document.getElementById('subscriptionInterval').value;
             const startSubscription = document.getElementById('startSubscription').value;
 
-            if (customerName && subscriptionAmount && subscriptionInterval && startSubscription) {
-                const newSubscriptionId = 'sub' + (document.getElementsByClassName('subscription-item').length + 1);
-                const subscriptionList = document.querySelector('.subscription-list');
+            if (verifiedCustomer && subscriptionAmount && subscriptionInterval && startSubscription) {
+                const nextDraftDate = calculateNextDraftDate(startSubscription, subscriptionInterval);
+
+                const subscriptionList = document.getElementById('subscriptionList');
+                const newSubscriptionId = 'sub' + (subscriptionList.getElementsByClassName('item').length + 1);
 
                 const subscriptionItem = document.createElement('div');
-                subscriptionItem.className = 'subscription-item';
+                subscriptionItem.className = 'item';
                 subscriptionItem.id = newSubscriptionId;
 
                 const subscriptionDetails = document.createElement('div');
-                subscriptionDetails.className = 'subscription-details';
-                subscriptionDetails.innerHTML = `Name: ${customerName} | Amount: $${subscriptionAmount} | Interval: ${subscriptionInterval.charAt(0).toUpperCase() + subscriptionInterval.slice(1)} | Starts: ${startSubscription}`;
+                subscriptionDetails.className = 'details';
+                subscriptionDetails.innerHTML = `Name: ${verifiedCustomer} | Amount: $${subscriptionAmount} | Interval: ${subscriptionInterval.charAt(0).toUpperCase() + subscriptionInterval.slice(1)} | Starts: ${startSubscription} | Next Draft: ${nextDraftDate}`;
 
                 const buttonsDiv = document.createElement('div');
-                buttonsDiv.className = 'subscription-actions';
+                buttonsDiv.className = 'actions';
 
                 const editButton = document.createElement('button');
                 editButton.innerText = 'Edit';
-                editButton.onclick = () => editSubscription(newSubscriptionId);
+                editButton.onclick = () => openModal(newSubscriptionId);
 
                 const deleteButton = document.createElement('button');
                 deleteButton.innerText = 'Delete';
@@ -293,15 +320,64 @@
 
                 subscriptionList.appendChild(subscriptionItem);
 
-                // Clear form fields
                 document.getElementById('subscriptionForm').reset();
+                console.log('Subscription added:', verifiedCustomer);
             } else {
                 console.log('Please fill out all fields.');
             }
         }
 
-        function editSubscription(subscriptionId) {
-            console.log('Editing subscription:', subscriptionId, 'is not implemented in this demo.');
+        function calculateNextDraftDate(startDate, interval) {
+            const date = new Date(startDate);
+            switch (interval) {
+                case 'weekly':
+                    date.setDate(date.getDate() + 7);
+                    break;
+                case 'biweekly':
+                    date.setDate(date.getDate() + 14);
+                    break;
+                case 'monthly':
+                    date.setMonth(date.getMonth() + 1);
+                    break;
+                case 'every4weeks':
+                    date.setDate(date.getDate() + 28);
+                    break;
+            }
+            return date.toISOString().split('T')[0];
+        }
+
+        function openModal(subscriptionId) {
+            const subscriptionItem = document.getElementById(subscriptionId);
+            const subscriptionDetails = subscriptionItem.querySelector('.details').innerText.split(' | ');
+
+            document.getElementById('editCustomerName').value = subscriptionDetails[0].split(': ')[1];
+            document.getElementById('editSubscriptionAmount').value = subscriptionDetails[1].split(': $')[1];
+            document.getElementById('editSubscriptionInterval').value = subscriptionDetails[2].split(': ')[1].toLowerCase();
+            document.getElementById('editStartSubscription').value = subscriptionDetails[3].split(': ')[1];
+            document.getElementById('editNextDraftDate').value = subscriptionDetails[4].split(': ')[1];
+
+            document.getElementById('editModal').style.display = 'block';
+            document.getElementById('editModal').dataset.subscriptionId = subscriptionId;
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function saveSubscription() {
+            const subscriptionId = document.getElementById('editModal').dataset.subscriptionId;
+            const subscriptionItem = document.getElementById(subscriptionId);
+
+            const customerName = document.getElementById('editCustomerName').value;
+            const subscriptionAmount = document.getElementById('editSubscriptionAmount').value;
+            const subscriptionInterval = document.getElementById('editSubscriptionInterval').value;
+            const startSubscription = document.getElementById('editStartSubscription').value;
+            const nextDraftDate = calculateNextDraftDate(startSubscription, subscriptionInterval);
+
+            subscriptionItem.querySelector('.details').innerHTML = `Name: ${customerName} | Amount: $${subscriptionAmount} | Interval: ${subscriptionInterval.charAt(0).toUpperCase() + subscriptionInterval.slice(1)} | Starts: ${startSubscription} | Next Draft: ${nextDraftDate}`;
+
+            closeModal();
+            console.log('Subscription updated:', subscriptionId);
         }
 
         function deleteSubscription(subscriptionId) {
@@ -310,8 +386,18 @@
             console.log('Subscription deleted:', subscriptionId);
         }
 
-        function selectVerifiedCustomer(customerName) {
-            document.getElementById('customerName').value = customerName;
+        function filterSubscriptions() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const subscriptionItems = document.querySelectorAll('.item');
+
+            subscriptionItems.forEach(item => {
+                const details = item.querySelector('.details').innerText.toLowerCase();
+                if (details.includes(searchInput)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         }
     </script>
 </body>
